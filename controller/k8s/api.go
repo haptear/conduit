@@ -23,6 +23,8 @@ import (
 
 // API provides shared informers for all Kubernetes objects
 type API struct {
+	Client kubernetes.Interface
+
 	NS       coreinformers.NamespaceInformer
 	Deploy   appinformers.DeploymentInformer
 	RS       appinformers.ReplicaSetInformer
@@ -30,6 +32,7 @@ type API struct {
 	RC       coreinformers.ReplicationControllerInformer
 	Svc      coreinformers.ServiceInformer
 	Endpoint coreinformers.EndpointsInformer
+	CM       coreinformers.ConfigMapInformer
 
 	nsSynced       cache.InformerSynced
 	deploySynced   cache.InformerSynced
@@ -38,6 +41,7 @@ type API struct {
 	rcSynced       cache.InformerSynced
 	svcSynced      cache.InformerSynced
 	endpointSynced cache.InformerSynced
+	cmSynced       cache.InformerSynced
 
 	sharedInformers informers.SharedInformerFactory
 }
@@ -53,8 +57,11 @@ func NewAPI(k8sClient kubernetes.Interface) *API {
 	replicationControllerInformer := sharedInformers.Core().V1().ReplicationControllers()
 	serviceInformer := sharedInformers.Core().V1().Services()
 	endpointInformer := sharedInformers.Core().V1().Endpoints()
+	configMapInformer := sharedInformers.Core().V1().ConfigMaps()
 
 	api := &API{
+		Client: k8sClient,
+
 		NS:       namespaceInformer,
 		Deploy:   deployInformer,
 		RS:       replicaSetInformer,
@@ -62,6 +69,7 @@ func NewAPI(k8sClient kubernetes.Interface) *API {
 		RC:       replicationControllerInformer,
 		Svc:      serviceInformer,
 		Endpoint: endpointInformer,
+		CM:       configMapInformer,
 
 		nsSynced:       namespaceInformer.Informer().HasSynced,
 		deploySynced:   deployInformer.Informer().HasSynced,
@@ -70,6 +78,7 @@ func NewAPI(k8sClient kubernetes.Interface) *API {
 		rcSynced:       replicationControllerInformer.Informer().HasSynced,
 		svcSynced:      serviceInformer.Informer().HasSynced,
 		endpointSynced: endpointInformer.Informer().HasSynced,
+		cmSynced:       configMapInformer.Informer().HasSynced,
 
 		sharedInformers: sharedInformers,
 	}
@@ -96,6 +105,7 @@ func (api *API) Sync() error {
 		api.rcSynced,
 		api.svcSynced,
 		api.endpointSynced,
+		api.cmSynced,
 	) {
 		return errors.New("timed out waiting for caches to sync")
 	}
