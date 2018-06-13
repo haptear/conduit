@@ -226,6 +226,7 @@ spec:
         resources: {}
         securityContext:
           runAsUser: 2102
+        terminationMessagePolicy: FallbackToLogsOnError
       initContainers:
       - args:
         - --incoming-proxy-port
@@ -245,6 +246,7 @@ spec:
             add:
             - NET_ADMIN
           privileged: false
+        terminationMessagePolicy: FallbackToLogsOnError
       serviceAccount: conduit-controller
 status: {}
 ---
@@ -341,6 +343,7 @@ spec:
         resources: {}
         securityContext:
           runAsUser: 2102
+        terminationMessagePolicy: FallbackToLogsOnError
       initContainers:
       - args:
         - --incoming-proxy-port
@@ -360,6 +363,7 @@ spec:
             add:
             - NET_ADMIN
           privileged: false
+        terminationMessagePolicy: FallbackToLogsOnError
 status: {}
 ---
 kind: Service
@@ -450,6 +454,7 @@ spec:
         resources: {}
         securityContext:
           runAsUser: 2102
+        terminationMessagePolicy: FallbackToLogsOnError
       initContainers:
       - args:
         - --incoming-proxy-port
@@ -469,6 +474,7 @@ spec:
             add:
             - NET_ADMIN
           privileged: false
+        terminationMessagePolicy: FallbackToLogsOnError
       serviceAccount: conduit-prometheus
       volumes:
       - configMap:
@@ -674,6 +680,7 @@ spec:
         resources: {}
         securityContext:
           runAsUser: 2102
+        terminationMessagePolicy: FallbackToLogsOnError
       initContainers:
       - args:
         - --incoming-proxy-port
@@ -693,6 +700,7 @@ spec:
             add:
             - NET_ADMIN
           privileged: false
+        terminationMessagePolicy: FallbackToLogsOnError
       volumes:
       - configMap:
           items:
